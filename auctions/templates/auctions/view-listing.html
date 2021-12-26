@@ -1,0 +1,136 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div id="view-list-cnt">
+    <div id="listing">
+        <h1>{{ auction_listing.title }}</h1>
+        <div id="listing-img">
+            <img src="{{ auction_listing.url }}" alt="{{ auction_listing.title }}">
+            <hr>
+        </div>
+        <p><span class="label">Price:</span>
+            ${{ auction_listing.price }}
+        </p>
+        {% if auction_listing.description == None %}
+            <p><span class="label">Description:</span>
+            </p>
+        {% else %}
+            <p><span class="label">Description:</span>
+            {{ auction_listing.description }}
+        </p>
+        {% endif %}
+        <p>
+            <span class="label">Category: </span>
+            {{ auction_listing.category }}
+        </p>
+        <p><span class="label">Created: </span>
+            {{ auction_listing.time}}
+        </p>
+        <p><span class="label">Listed By: </span>
+            {{ auction_listing.user| capfirst }}
+        </p>
+        <!-- watch item -->
+        <div id="watch-item">
+            <form action="{% url 'watch-list' %}" method="POST">
+                {% csrf_token %}
+                <input type="text" value="{{ request.user.id }}" name="watcher" hidden>
+                <input type="text" value="{{ auction_listing.id }}" name="id" hidden>
+                <input type="text" value="{{ auction_listing }}" name="auction_listing" hidden>
+                <input type="submit" value="Watch item" class="purple-btn">
+            </form>
+        </div>
+        <br>
+        <!-- comments -->
+        <div id="comments">
+            <h3 class="center-txt">Comments</h3>
+            <ul>
+                {% for comment in comments %}
+                <li>
+                    {{ comment.commentator | capfirst }}: {{ comment.comment }}
+                </li>
+                {% endfor %}
+            </ul>
+            <!-- add and view comments -->
+            <div id="add-comment">
+                <form action="{% url 'comment' %}" method="POST" id="comment">
+                    {% csrf_token %}
+                    <input type="text" value="{{ request.user.id }}" name="user_id" hidden>
+                    <input type="text" value="{{ auction_listing.id }}" name="item_id" hidden>
+                    <textarea type="text" name="comment" placeholder="...add comment" cols='50' rows='5'  class="purple-input"></textarea>
+                    <br>
+                    <input type="submit" value="Post Comment" class="purple-btn">
+                </form>
+            </div>
+        </div>
+
+        <!-- delete listing -->
+        <div id="delete-listing">
+        {% if auction_listing.user == request.user %}
+            <form action="{% url 'delete-listing' %}" id="delete" method="POST">
+                {% csrf_token %}   
+                <input type="text" value="{{ request.user.id }}" name="user" hidden>
+                <input type="text" value="{{ auction_listing.id }}" name="id" hidden>
+                <input type="submit" value="Delete Listing" class="btn btn-danger">
+            </form>
+        {% endif %}
+        </div>
+    </div>
+    <br>
+    
+    
+    <!-- listing info [...watchers, bidders and their bids] -->
+    <div id="watchers" class="components">
+        <h3 class="center-txt">Watchers</h3>
+        <ul>
+            
+            {% for watchlist in watchlists %}
+            <li>
+                {{ watchlist.watcher | capfirst }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <!-- bidders -->
+    <div id="bidders" class="components">
+        <h3 class="center-txt">Bidders</h3>
+        <ul>
+            {% for bid in bids %}
+            <li>
+                {{ bid.bidder | capfirst }} bidded at ${{ bid.bid_price }}
+            </li>
+            {% endfor %}
+        </ul>
+        <!-- Winner -->
+        <div id="winner">
+            {% if winner.bidder %}
+            <p>
+                {{ winner.bidder| capfirst }} is winning this bid!
+            </p>
+            {% else %}
+            <p>
+                Hey {{ request.user | capfirst }}, there's no <i>winner</i> yet! Make sure you place a bid <strong>Now!</strong>
+            </p>
+            {% endif %}
+        </div>
+        <!-- place bid -->
+        <div id="place-bid">
+            <form action="{% url 'bid' %}" id="bid" method="POST">
+                 {% csrf_token %}   
+                 <input type="text" value="{{ request.user.id }}" name="bidder" hidden>
+                <input type="text" value="{{ auction_listing.id }}" name="id" hidden> 
+                <!-- <input type="text" value="{{ auction_listing.id }}" name="auction-id" hidden> -->
+                <input type="text" value="{{ auction_listing.price }}" name="price" hidden> 
+                <input type="text" name="bid-price" placeholder="...start bidding" class="purple-input">
+                <input type="submit" value="Bid" class="purple-btn">
+            </form>
+        </div>
+    </div>
+    
+    <br>
+    
+
+    
+</div>
+
+{% endblock %}

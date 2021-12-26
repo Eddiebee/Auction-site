@@ -1,0 +1,39 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h1>Hi {{ request.user |capfirst }}</h1>
+    <h4>...here is your watchlist </h4>
+    <br>
+
+    <ul>
+        {% for item in watchlist %}
+                <!-- <li>{{ item.watch_item.title }} -->
+            <form action="{% url 'view-listing' %}" method="POST">
+                {% csrf_token %}
+                <input type="text" value="{{ item.watch_item.title }}" name="title" hidden>
+                <input type="text" value="{{ item.watch_item.id }}" name="id" hidden>
+
+                <input type="submit" value="{{ item.watch_item.title }}" class="category-component">
+            </form>
+            <br>
+
+             <!-- delete watchItem -->
+            <form action="{% url 'delete-watch-item' %}" method="POST">
+                {% csrf_token %}
+                <input type="text" value="{{ item.watch_item.title }}" name="title" hidden>
+                <input type="text" value="{{ item.watch_item.id }}" name="id" hidden>
+
+                <input type="submit" value="Delete item" class="btn btn-danger">
+            </form>
+           
+            <hr>
+            <br>
+        
+                <!-- </li> -->
+        {% endfor%}
+    </ul>
+
+    
+    <!-- <p>{{ watchlist }}</p> -->
+
+{% endblock %}

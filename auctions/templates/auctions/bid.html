@@ -1,0 +1,11 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+
+    <div>
+        {{ bid }} {{ initial }} {{ success }}
+        {% for bid in bid %}
+            {{ bid.bid_price }}
+        {% endfor %}
+    </div>
+{% endblock %}

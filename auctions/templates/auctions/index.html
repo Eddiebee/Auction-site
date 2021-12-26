@@ -1,0 +1,41 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <br>
+    <div class="cnt">
+        
+        {% for auction_listing in auction_listings %}
+        <!-- <a href="{% url 'view-listing' %}"  id="listing-link"> -->
+            <div class="listing">
+                <!-- <center> <img src="{{ auction_listing.image.url }}" alt="{{auction_listing.title }}"></center> -->
+                <center> <img src="{{ auction_listing.url }}" alt="{{auction_listing.title }}"></center>
+                <hr class="lines" style="color: rgb(216, 216, 243); width: 150px;">
+
+                <h5 id="title">{{ auction_listing.title }}</h5>
+                <h4>Price: ${{ auction_listing.price }}</h4>
+                {% if auction_listing.description == None %}
+                    <p id="description"><span>Description:</span> </p>
+                {% else %}
+                    <p id="description"><span>Description:</span>  {{ auction_listing.description }}</p>
+                {% endif %}
+                <p id="created">Created: {{ auction_listing.time }}</p>
+
+                <!-- trying this out -->
+                <form action="{% url 'view-listing' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="text" value="{{ auction_listing.title }}" name="title" hidden>
+                    <input type="text" value="{{ auction_listing.id }}" name="id" hidden>
+
+                    <input type="submit" value="View Listing" id="view-listing">
+                </form>
+               
+            </div>
+        <!-- </a> -->
+            <hr>
+        {% endfor %}
+        
+    </div>
+
+    <!-- {{ auction_listing }} -->
+    
+{% endblock %}

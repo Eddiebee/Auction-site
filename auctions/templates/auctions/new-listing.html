@@ -1,0 +1,56 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <h1> Create New Listing </h1>
+
+    <div id="new-listing">
+        <form action="{% url 'save-listing' %}" method="POST">
+            {% csrf_token %}
+    
+            <label for="title" class="label">Title:
+                <input type="text" name="title" class="purple-input">
+            </label>
+    
+            <label for="description" class="label">Description:
+                <textarea name="description" id="description" cols="30" rows="10" class="purple-input"></textarea>
+            </label>
+    
+            <label for="starting-bid" class="label">Starting Bid:
+                <input type="number" name="starting-bid" class="purple-input">
+            </label>
+    
+            <!-- <label for="image">URL for Image:
+                <input type="file" name="image">
+            </label> -->
+
+            <label for="url" class="label">URL for Image:
+                <input type="url" name="url" class="purple-input">
+            </label>
+
+            <label for="user" class="label">Listed by:
+                <input type="text" name="user" value="{{ request.user.id }}" class="purple-input" hidden>
+            </label>
+    
+            <label for="category" class="label">Category:
+                <datalist id="categories">
+                    <option value="Fashion"></option>
+                    <option value="Electronics"></option>
+                    <option value="Toys"></option>
+                    <option value="Home"></option>
+                    <option value="Automobiles"></option>
+                    <option value="Groceries"></option>
+                    <option value="Restaurant"></option>
+                </datalist>
+                <input type="text" name="category" list="categories" class="purple-input">
+            </label>
+
+            <label for="time" class="label">Date and Time
+                <input type="datetime-local" name="time" class="purple-input">
+            </label>
+
+            <input id="new-btn" type="submit" value="Create Listing" class="purple-btn">
+        </form>
+    </div>
+
+{% endblock %}
